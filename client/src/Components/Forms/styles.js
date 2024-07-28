@@ -17,7 +17,7 @@ export const FormStyled = styled("form")({
   justifyContent: "center",
 });
 
-export const FileInputStyled = styled("input")({
+export const FileInputStyled = styled("div")({
   width: "97%",
   margin: "10px 0",
 });
