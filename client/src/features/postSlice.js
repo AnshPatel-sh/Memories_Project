@@ -1,14 +1,15 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import * as api from "../api/index.js";
 
-const initialState = {
-  posts: [],
-};
+// const initialState = {
+//   posts: [],
+// };
 
 export const fetchPost = createAsyncThunk("/posts/fetchpost", async () => {
   try {
     const { data } = await api.fetchPost();
-    console.log(`Fetch post function ${data}`);
+    console.log(`Fetch post function`);
+    console.log(data) // this returns array
     return data;
   } catch (error) {
     console.log(error)
@@ -29,7 +30,9 @@ export const createPost = createAsyncThunk("/posts", async (newPost) => {
 
 export const postSlice = createSlice({
   name: "posts",
-  initialState,
+  initialState:{
+    posts:[]
+  },
   reducers: {
     // FETCH_ALL: (state, action) => {},
     CREATE: (state, action) => {},

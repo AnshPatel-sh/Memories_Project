@@ -2,6 +2,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchPost } from "../../features/postSlice.js";
 import { useEffect } from "react";
 
+
+
 export function Posts() {
   const dispatch = useDispatch();
 
@@ -9,7 +11,9 @@ export function Posts() {
     dispatch(fetchPost());
   }, [dispatch]);
 
-  const { posts } = useSelector((state) => {
+  
+
+  const {posts}= useSelector((state) => {
     return state.postDataInRedux;
   });
 
@@ -19,6 +23,15 @@ export function Posts() {
   return (
     <>
       <h1>Posts component</h1>
+      {posts.length > 0 ? (
+        <ul>
+          {posts.map((post) => (
+            <li key={post.id}>{post.title}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>No posts available.</p>
+      )}
     </>
   );
 }
