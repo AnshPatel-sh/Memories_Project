@@ -2,16 +2,33 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import * as api from "../api/index.js";
 
 const initialState = {
-  post: [],
+  posts: [],
 };
 
-export const fetchPost = createAsyncThunk("posts/getPosts", async () => {
-  const { data } = await api.fetchPost();
-  return data;
+export const fetchPost = createAsyncThunk("/posts/fetchpost", async () => {
+  try {
+    const { data } = await api.fetchPost();
+    console.log(`Fetch post function ${data}`);
+    return data;
+  } catch (error) {
+    console.log(error)
+  }
+});
+
+export const createPost = createAsyncThunk("/posts", async (newPost) => {
+  try {
+    console.log(`Code entered createPost`);
+    const { data } = await api.createPost(newPost);
+    console.log("Response from backend:", data);
+
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 export const postSlice = createSlice({
-  name: "post",
+  name: "posts",
   initialState,
   reducers: {
     // FETCH_ALL: (state, action) => {},
@@ -20,18 +37,26 @@ export const postSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchPost.pending, (state) => {
-        return state
+        return state;
+        // state.loading = true;
       })
       .addCase(fetchPost.fulfilled, (state, action) => {
-        state.post = action.payload;
+        // state.loading = false;
+        state.posts = action.payload;
       })
       .addCase(fetchPost.rejected, (state, action) => {
         return state;
-        
+        // state.loading = false;
+      })
+      .addCase(createPost.fulfilled, (state, action) => {
+        console.log(`New post received${action.payload}`);
+        state.posts.push(action.payload);
+        console.log(`Data added`);
+        console.log(state);
       });
   },
 });
 
-export const { FETCH_ALL, CREATE } = postSlice.actions;
+export const { CREATE } = postSlice.actions;
 
 export default postSlice.reducer;

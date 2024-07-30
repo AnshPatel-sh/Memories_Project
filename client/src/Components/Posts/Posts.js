@@ -1,23 +1,24 @@
-import { Post } from "./Post/Post";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPost } from "../../features/postSlice.js";
+import { useEffect } from "react";
 
 export function Posts() {
   const dispatch = useDispatch();
-  const posts = useSelector((state) => {
-    return state.post;
+
+  useEffect(() => {
+    dispatch(fetchPost());
+  }, [dispatch]);
+
+  const { posts } = useSelector((state) => {
+    return state.postDataInRedux;
   });
 
-  //  useEffect(() => {
-  //    dispatch(fetchPost());
-  //  }, [dispatch]);
-
+  console.log(`Post data logged in Posts.js`);
   console.log(posts);
+
   return (
     <>
-      <h1>Posts Function</h1>
-      <Post />
-      <Post />
+      <h1>Posts component</h1>
     </>
   );
 }

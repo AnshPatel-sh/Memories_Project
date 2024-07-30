@@ -3,17 +3,15 @@ import {
   PaperStyled,
   ButtonSubmitStyled,
   FileInputStyled,
-  FormStyled,
-  Root
+  // FormStyled,
+  Root,
 } from "./styles.js";
 
 import FileBase from "react-file-base64";
 
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-
-const handleSubmit = () => {};
-const clear = ()=>{}
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { createPost } from "../../features/postSlice.js";
 
 export function Form() {
   const [postData, setPostData] = useState({
@@ -23,11 +21,22 @@ export function Form() {
     tags: "",
     selectedFile: "",
   });
+
+  const dispatch = useDispatch();
+
+  const handleSubmit = (e) => {
+    console.log(`Form submitted${postData.title}`);
+    e.preventDefault();
+    console.log(`Code near dispatch`)
+    dispatch(createPost(postData));
+    console.log(`COde after dispatch`)
+  };
+  const clear = () => {};
   return (
     <>
       <PaperStyled>
         <Root>
-          <FormStyled autoComplete="off" noValidate onSubmit={handleSubmit}>
+          <form autoComplete="off" noValidate onSubmit={handleSubmit}>
             <Typography variant="h6">Creating a memory</Typography>
             <TextField
               name="creator"
@@ -36,7 +45,7 @@ export function Form() {
               fullWidth
               value={postData.creator}
               onChange={(e) => {
-                setPostData({ ...postData, creator: e.target.value });
+                return setPostData({ ...postData, creator: e.target.value });
               }}
             ></TextField>
 
@@ -46,9 +55,9 @@ export function Form() {
               label="Title"
               fullWidth
               value={postData.title}
-              onChange={(e) =>
-                setPostData({ ...postData, title: e.target.value })
-              }
+              onChange={(e) => {
+                return setPostData({ ...postData, title: e.target.value });
+              }}
             />
             <TextField
               name="message"
@@ -58,8 +67,9 @@ export function Form() {
               multiline
               rows={4}
               value={postData.message}
-              onChange={(e) =>
-                setPostData({ ...postData, message: e.target.value })
+              onChange={(e) =>{
+                return setPostData({ ...postData, message: e.target.value });
+              }
               }
             />
             <TextField
@@ -68,8 +78,10 @@ export function Form() {
               label="Tags (coma separated)"
               fullWidth
               value={postData.tags}
-              onChange={(e) =>
-                setPostData({ ...postData, tags: e.target.value.split(",") })
+              onChange={(e) =>{
+
+                return setPostData({ ...postData, tags: e.target.value.split(",") })
+              }
               }
             />
 
@@ -77,8 +89,10 @@ export function Form() {
               <FileBase
                 type="file"
                 multiple={false}
-                onDone={({ base64 }) =>
-                  setPostData({ ...postData, selectedFile: base64 })
+                onDone={({ base64 }) =>{
+                  return setPostData({ ...postData, selectedFile: base64 })
+                }
+                  
                 }
               />
             </FileInputStyled>
@@ -101,7 +115,7 @@ export function Form() {
             >
               Clear
             </ButtonSubmitStyled>
-          </FormStyled>
+          </form>
         </Root>
       </PaperStyled>
     </>
