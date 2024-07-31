@@ -4,8 +4,8 @@ import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import moment from "moment";
-import {setCurrentId} from "../../../features/postSlice.js"
-import {useDispatch} from "react-redux"
+import { setCurrentId,deletePost } from "../../../features/postSlice.js";
+import { useDispatch } from "react-redux";
 
 import {
   MediaStyled,
@@ -17,7 +17,7 @@ import {
   CardActionsStyled,
 } from "./styles.js";
 
-export function Post({post}) {
+export function Post({ post }) {
   const dispatch = useDispatch();
   return (
     <>
@@ -31,9 +31,7 @@ export function Post({post}) {
         />
         <OverlayStyled>
           <Typography variant="h6">{post.creator}</Typography>
-          <Typography variant="body2">
-            {moment(post.createdAt).fromNow()}
-          </Typography>
+          <Typography variant="body2">{post.createdAt}</Typography>
         </OverlayStyled>
         <Overlay2Styled>
           <Button
@@ -68,7 +66,7 @@ export function Post({post}) {
           <Button
             size="small"
             color="primary"
-            // onClick={() => dispatch(deletePost(post._id))}
+            onClick={() => dispatch(deletePost(post._id))}
           >
             <DeleteIcon fontSize="small" /> Delete
           </Button>

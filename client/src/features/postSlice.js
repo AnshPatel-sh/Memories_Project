@@ -9,8 +9,6 @@ import * as api from "../api/index.js";
 export const fetchPost = createAsyncThunk("/posts/fetchpost", async () => {
   try {
     const { data } = await api.fetchPost();
-    console.log(`Fetch post function`);
-    console.log(data); // this returns array
     return data;
   } catch (error) {
     console.log(error);
@@ -20,10 +18,7 @@ export const fetchPost = createAsyncThunk("/posts/fetchpost", async () => {
 /**FUNCTION 2 -----CREATE THE POST----- */
 export const createPost = createAsyncThunk("/posts", async (newPost) => {
   try {
-    console.log(`Code entered createPost`);
     const { data } = await api.createPost(newPost);
-    console.log("Response from backend:", data);
-
     return data;
   } catch (error) {
     console.log(error);
@@ -39,6 +34,13 @@ export const updatePost = createAsyncThunk(
   }
 );
 
+/**FUNCTION 4 -----DELETE THE POST----- */
+export const deletePost = createAsyncThunk("posts/deletePost", async (id) => {
+  await api.deletePost(id);
+  return id;
+});
+
+/** -----POST SLICE----- */
 export const postSlice = createSlice({
   name: "posts",
   initialState: {
@@ -71,6 +73,10 @@ export const postSlice = createSlice({
         state.posts = state.posts.map((post) => {
           return post._id === action.payload._id ? action.payload : post;
         });
+      })
+      /**DELETE POST REDUCER */
+      .addCase(deletePost.fulfilled, (state, action) => {
+        state.posts = state.posts.filter((post) => post._id !== action.payload);
       });
   },
 });

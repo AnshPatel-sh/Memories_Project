@@ -3,7 +3,6 @@ import {
   PaperStyled,
   ButtonSubmitStyled,
   FileInputStyled,
-  // FormStyled,
   Root,
 } from "./styles.js";
 

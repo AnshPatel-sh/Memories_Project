@@ -1,7 +1,6 @@
 import React from "react";
 import { Container, AppBar, Typography, Grow, Grid } from "@mui/material";
 import memories from "./images/memories.png";
-import { Post } from "./Components/Posts/Post/Post";
 import { Form } from "./Components/Forms/Form";
 import { Posts } from "./Components/Posts/Posts";
 import { AppBarStyled, HeadingStyled, ImageStyled } from "./styles.js";
