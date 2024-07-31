@@ -1,4 +1,4 @@
-import { TextField, Button, Typography, Paper } from "@mui/material";
+import { TextField, Typography } from "@mui/material";
 import {
   PaperStyled,
   ButtonSubmitStyled,
@@ -8,10 +8,12 @@ import {
 } from "./styles.js";
 
 import FileBase from "react-file-base64";
+import { setCurrentId } from "../../features/postSlice.js";
 
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { createPost } from "../../features/postSlice.js";
+import { useDispatch, useSelector } from "react-redux";
+import { createPost, updatePost } from "../../features/postSlice.js";
+import { useEffect } from "react";
 
 export function Form() {
   const [postData, setPostData] = useState({
@@ -24,20 +26,51 @@ export function Form() {
 
   const dispatch = useDispatch();
 
-  const handleSubmit = (e) => {
-    console.log(`Form submitted${postData.title}`);
-    e.preventDefault();
-    console.log(`Code near dispatch`)
-    dispatch(createPost(postData));
-    console.log(`COde after dispatch`)
+  const currentId = useSelector((state) => {
+    return state.postDataInRedux.currentId;
+  });
+
+  const post = useSelector((state) =>
+    currentId
+      ? state.postDataInRedux.posts.find((p) => {
+          return p._id === currentId;
+        })
+      : null
+  );
+
+  useEffect(() => {
+    if (post) setPostData(post);
+  }, [post]);
+
+  const clear = () => {
+    dispatch(setCurrentId(null));
+    setPostData({
+      creator: "",
+      title: "",
+      message: "",
+      tags: "",
+      selectedFile: "",
+    });
   };
-  const clear = () => {};
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (currentId) {
+      dispatch(updatePost({ id: currentId, updatedPost: postData }));
+    } else {
+      dispatch(createPost(postData));
+    }
+
+    clear();
+  };
   return (
     <>
       <PaperStyled>
         <Root>
           <form autoComplete="off" noValidate onSubmit={handleSubmit}>
-            <Typography variant="h6">Creating a memory</Typography>
+            <Typography variant="h6">
+              {currentId ? "Editing" : "Creating"} a Memory
+            </Typography>
             <TextField
               name="creator"
               variant="outlined"
@@ -67,10 +100,9 @@ export function Form() {
               multiline
               rows={4}
               value={postData.message}
-              onChange={(e) =>{
+              onChange={(e) => {
                 return setPostData({ ...postData, message: e.target.value });
-              }
-              }
+              }}
             />
             <TextField
               name="tags"
@@ -78,22 +110,21 @@ export function Form() {
               label="Tags (coma separated)"
               fullWidth
               value={postData.tags}
-              onChange={(e) =>{
-
-                return setPostData({ ...postData, tags: e.target.value.split(",") })
-              }
-              }
+              onChange={(e) => {
+                setPostData({
+                  ...postData,
+                  tags: e.target.value.split(","),
+                });
+              }}
             />
 
             <FileInputStyled>
               <FileBase
                 type="file"
                 multiple={false}
-                onDone={({ base64 }) =>{
-                  return setPostData({ ...postData, selectedFile: base64 })
-                }
-                  
-                }
+                onDone={({ base64 }) => {
+                  return setPostData({ ...postData, selectedFile: base64 });
+                }}
               />
             </FileInputStyled>
 
@@ -104,7 +135,7 @@ export function Form() {
               type="submit"
               fullWidth
             >
-              Submit
+              {currentId ? "Update" : "Submit"}
             </ButtonSubmitStyled>
             <ButtonSubmitStyled
               variant="contained"
