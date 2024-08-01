@@ -39,6 +39,7 @@ export function Form() {
 
   useEffect(() => {
     if (post) setPostData(post);
+    if (!currentId) clear();
   }, [post]);
 
   const clear = () => {

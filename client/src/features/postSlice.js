@@ -40,6 +40,26 @@ export const deletePost = createAsyncThunk("posts/deletePost", async (id) => {
   return id;
 });
 
+/**FUNCTION 4 -----LIKE THE POST----- */
+// export const likePost = createAsyncThunk("posts/likePost", async (id) => {
+//   console.log(`Like post thunk activated`)
+//   const { data } = await api.likePost(id);
+//   console.log(data)
+//   return data;
+// });
+
+export const likePost = createAsyncThunk(
+  "posts/likePost",
+  async (id, { rejectWithValue }) => {
+    try {
+      const { data } = await api.likePost(id);
+      return data; // This should be the updated post
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 /** -----POST SLICE----- */
 export const postSlice = createSlice({
   name: "posts",
@@ -77,6 +97,13 @@ export const postSlice = createSlice({
       /**DELETE POST REDUCER */
       .addCase(deletePost.fulfilled, (state, action) => {
         state.posts = state.posts.filter((post) => post._id !== action.payload);
+        state.currentId = null;
+      })
+      /**LIKE UPDATE */
+      .addCase(likePost.fulfilled, (state, action) => {
+        state.posts = state.posts.map((post) =>
+          post._id === action.payload._id ? action.payload : post
+        );
       });
   },
 });

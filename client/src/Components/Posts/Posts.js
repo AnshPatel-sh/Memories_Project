@@ -10,6 +10,7 @@ import {
 } from "./styles.js";
 
 export function Posts() {
+  const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -24,7 +25,7 @@ export function Posts() {
     return state.postDataInRedux;
   });
 
-  const [loading, setLoading] = useState(true);
+  
 
   return (
     <>

@@ -1,10 +1,9 @@
 import React from "react";
-import { Button, CardContent, Typography } from "@mui/material";
+import { Button, CardContent, ClickAwayListener, Typography } from "@mui/material";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import moment from "moment";
-import { setCurrentId,deletePost } from "../../../features/postSlice.js";
+import { setCurrentId,deletePost,likePost } from "../../../features/postSlice.js";
 import { useDispatch } from "react-redux";
 
 import {
@@ -19,6 +18,9 @@ import {
 
 export function Post({ post }) {
   const dispatch = useDispatch();
+  const handleLike = async ()=>{
+    await dispatch(likePost(post._id))
+  }
   return (
     <>
       <CardStyled>
@@ -59,9 +61,9 @@ export function Post({ post }) {
           <Button
             size="small"
             color="primary"
-            // onClick={() => dispatch(likePost(post._id))}
+            onClick={handleLike}
           >
-            <ThumbUpAltIcon fontSize="small" /> Like {post.likeCount}
+            <ThumbUpAltIcon fontSize="small" /> Like {post.likes}
           </Button>
           <Button
             size="small"
