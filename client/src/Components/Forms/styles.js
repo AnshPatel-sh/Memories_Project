@@ -26,3 +26,30 @@ export const ButtonSubmitStyled = styled(Button)(({ theme }) => ({
   marginBottom: 10,
 }));
 
+<<<<<<< HEAD
+=======
+// import { makeStyles } from "@mui/styles"; // Change this import
+
+// export default makeStyles((theme) => ({
+//   root: {
+//     "& .MuiTextField-root": {
+//       margin: theme.spacing(1),
+//     },
+//   },
+//   paper: {
+//     padding: theme.spacing(2),
+//   },
+//   form: {
+//     display: "flex",
+//     flexWrap: "wrap",
+//     justifyContent: "center",
+//   },
+//   fileInput: {
+//     width: "97%",
+//     margin: "10px 0",
+//   },
+//   buttonSubmit: {
+//     marginBottom: 10,
+//   },
+// }));
+>>>>>>> f1701dc7ad7792e37011c23eda43885af0503cb4
