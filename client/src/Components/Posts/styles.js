@@ -13,8 +13,5 @@ export const SmMarginStyled = styled(Box)(({ theme }) => ({
 export const ActionDivStyled = styled("div")({
   textAlign: "center",
 });
-<<<<<<< HEAD
 
 
-=======
->>>>>>> f1701dc7ad7792e37011c23eda43885af0503cb4
