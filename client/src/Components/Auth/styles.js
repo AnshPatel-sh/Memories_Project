@@ -23,6 +23,7 @@ export const SubmitButton = styled(Button)(({ theme }) => ({
   margin: theme.spacing(3, 0, 2),
 }));
 
-export const GoogleButton = styled("div")(({ theme }) => ({
+export const GoogleButton = styled(Button)(({ theme }) => ({
   marginBottom: theme.spacing(2),
+  width: "100% !important",
 }));
