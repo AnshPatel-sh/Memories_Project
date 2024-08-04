@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { Avatar, Button, Typography } from "@mui/material";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-// import { useDispatch } from "react-redux";
+import React, { useState } from "react";
+import { Avatar, Button } from "@mui/material";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../features/authSlice.js";
 
 import memories from "../../images/memories.png";
 import {
@@ -16,15 +17,16 @@ import {
 } from "./styles";
 
 export function Navbar() {
-  const [user, setUser] = useState(null);
+  const user = useSelector((state) => state.auth.authData);
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const logout = () => {
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/auth");
   };
 
-
-
- 
   return (
     <AppBarStyled position="static" color="inherit">
       <BrandContainerStyled>
@@ -42,7 +44,11 @@ export function Navbar() {
               </Avatar>
             </PurpleStyled>
             <UserNameStyled variant="h6">{user?.result.name}</UserNameStyled>
-            <Button variant="contained" color="secondary" onClick={logout}>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={handleLogout}
+            >
               Logout
             </Button>
           </ProfileStyled>
@@ -59,5 +65,4 @@ export function Navbar() {
       </ToolbarStyled>
     </AppBarStyled>
   );
-};
-
+}

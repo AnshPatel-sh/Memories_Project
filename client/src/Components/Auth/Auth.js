@@ -3,6 +3,8 @@ import { GoogleLogin } from "@react-oauth/google";
 import { Button, Grid, Typography, Container } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { Icon } from "./icon";
+import {  useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 import { Input } from "./Input";
 import {
@@ -12,24 +14,30 @@ import {
   SubmitButton,
   GoogleButton,
 } from "./styles";
-import jwt_decode from "jwt-decode"
+import { googleLogin } from "../../features/authSlice";
+
 export function Auth() {
+  const navigate = useNavigate()
   const [isSignup, setIsSignup] = useState(true);
 
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch();
 
   const handleShowPassword = () => setShowPassword(!showPassword);
 
   const handleSubmit = (e) => {};
 
-  const googleSuccess = async (res) => {
-    const clientId = res?.clientId;
-    const credential = res?.credential;
+  const googleSuccess = async (credentialResponse) => {
     try {
-      console.log(res)
-      console.log(clientId)
-      console.log(credential)
-    } catch (error) {}
+      console.log(`This is credentialResponse`)
+      console.log(credentialResponse)
+      console.log(`This is credential`)
+      console.log(credentialResponse.credential)
+      await dispatch(googleLogin(credentialResponse.credential)).unwrap();
+      navigate("/");
+    } catch (error) {
+      console.log("Google login failed:", error);
+    }
   };
 
   const googleError = (error) => {

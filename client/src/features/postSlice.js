@@ -53,7 +53,7 @@ export const likePost = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const { data } = await api.likePost(id);
-      return data; // This should be the updated post
+      return data; 
     } catch (error) {
       return rejectWithValue(error.response.data);
     }

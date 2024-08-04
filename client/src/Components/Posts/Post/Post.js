@@ -17,10 +17,16 @@ import {
 } from "./styles.js";
 
 export function Post({ post }) {
+
+
+  
   const dispatch = useDispatch();
   const handleLike = async ()=>{
     await dispatch(likePost(post._id))
   }
+
+
+
   return (
     <>
       <CardStyled>
