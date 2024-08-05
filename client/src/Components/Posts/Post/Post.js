@@ -38,7 +38,7 @@ export function Post({ post }) {
           title={post.title}
         />
         <OverlayStyled>
-          <Typography variant="h6">{post.creator}</Typography>
+          <Typography variant="h6">{post.name}</Typography>
           <Typography variant="body2">{post.createdAt}</Typography>
         </OverlayStyled>
         <Overlay2Styled>

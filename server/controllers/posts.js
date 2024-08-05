@@ -13,14 +13,21 @@ export const getPosts = async (req, res) => {
 };
 
 export const createPost = async (req, res) => {
-  try {
+  
     const post = req.body;
-    const newPost = new postMessage(post);
-    await newPost.save();
-    return res.status(201).json(newPost);
-  } catch (error) {
-    res.status(404).json({ message: error.message });
-  }
+    const { userId } = req;
+    try {
+      const newPost = new postMessage({
+        ...post,
+        creator: userId,
+        createdAt: new Date().toISOString(),
+      });
+
+      await newPost.save();
+      res.status(201).json(newPost);
+    } catch (error) {
+      res.status(409).json({ message: error.message });
+    }
 };
 
 export const updatePost = async (req, res) => {

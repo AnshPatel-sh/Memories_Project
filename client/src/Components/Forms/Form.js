@@ -15,8 +15,9 @@ import { createPost, updatePost } from "../../features/postSlice.js";
 import { useEffect } from "react";
 
 export function Form() {
+  console.log("Form component is rendering");
   const [postData, setPostData] = useState({
-    creator: "",
+
     title: "",
     message: "",
     tags: "",
@@ -45,7 +46,7 @@ export function Form() {
   const clear = () => {
     dispatch(setCurrentId(null));
     setPostData({
-      creator: "",
+
       title: "",
       message: "",
       tags: "",
@@ -53,16 +54,41 @@ export function Form() {
     });
   };
 
+    const user = JSON.parse(localStorage.getItem("profile"));
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+
+    // NEW: Create a new object with postData and user's name
+    const newPostData = {
+      ...postData,
+      name: user?.result?.name || user?.result?.firstName || "Unknown",
+    };
+
     if (currentId) {
-      dispatch(updatePost({ id: currentId, updatedPost: postData }));
+      dispatch(updatePost({ id: currentId, updatedPost: newPostData }));
     } else {
-      dispatch(createPost(postData));
+      dispatch(createPost(newPostData));
     }
 
     clear();
   };
+
+
+ if (!user?.result?.name && !user?.result?.firstName) {
+   console.log("User is not authenticated, showing sign-in message");
+   return (
+     <PaperStyled>
+       <Typography variant="h6" align="center">
+         Please Sign In to create your own memories and like other's memories.
+       </Typography>
+     </PaperStyled>
+   );
+ }
+
+
   return (
     <>
       <PaperStyled>
@@ -71,7 +97,7 @@ export function Form() {
             <Typography variant="h6">
               {currentId ? "Editing" : "Creating"} a Memory
             </Typography>
-            <TextField
+            {/* <TextField
               name="creator"
               variant="outlined"
               label="Creator"
@@ -80,7 +106,7 @@ export function Form() {
               onChange={(e) => {
                 return setPostData({ ...postData, creator: e.target.value });
               }}
-            ></TextField>
+            ></TextField> */}
 
             <TextField
               name="title"

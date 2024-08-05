@@ -25,3 +25,5 @@ export const signIn = (userData) => API.post("/user/signin", userData);
 export const signUp = (userData) => {
   return API.post("/user/signup", userData);
 };
+
+
