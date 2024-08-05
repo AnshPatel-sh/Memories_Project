@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { jwtDecode } from "jwt-decode";
+import * as api from "../api/index.js";
 
+/**Storing state value user google login info in localstorage */
 const loadAuthDataFromStorage = () => {
   try {
     const authDataString = localStorage.getItem("profile");
@@ -11,13 +13,14 @@ const loadAuthDataFromStorage = () => {
   }
 };
 
+/**Async thunk for googleLogin that decodes the user crendential */
 export const googleLogin = createAsyncThunk(
   "auth/googleLogin",
   async (credential, { rejectWithValue }) => {
     try {
       const decodedToken = jwtDecode(credential);
-      console.log(`This is decoded Token`)
-      console.log(decodedToken)
+      console.log(`This is decoded Token`);
+      console.log(decodedToken);
       return {
         token: credential,
         result: {
@@ -33,6 +36,37 @@ export const googleLogin = createAsyncThunk(
   }
 );
 
+/**Async thunk for signin */
+export const signIn = createAsyncThunk(
+  "auth/signIn",
+  async (formData, { rejectWithValue }) => {
+    try {
+      const { data } = await api.signIn(formData);
+      localStorage.setItem("profile", JSON.stringify(data));
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+/**Async thunk for signup */
+
+export const signUp = createAsyncThunk(
+  "auth/signUp",
+  async (formData, { rejectWithValue }) => {
+    try {
+  
+      const { data } = await api.signUp(formData);
+      localStorage.setItem("profile", JSON.stringify(data));
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+/**Auth slice*/
 const authSlice = createSlice({
   name: "auth",
   initialState: {
@@ -45,10 +79,38 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(googleLogin.fulfilled, (state, action) => {
-      state.authData = action.payload;
-      localStorage.setItem("profile", JSON.stringify(action.payload));
-    });
+    /**gooleLogin builder to store the incoming data into store  */
+    builder
+      .addCase(googleLogin.fulfilled, (state, action) => {
+        state.authData = action.payload;
+        localStorage.setItem("profile", JSON.stringify(action.payload));
+      })
+      .addCase(signIn.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(signIn.fulfilled, (state, action) => {
+        state.authData = action.payload;
+        // state.loading = false;
+        state.error = null;
+      })
+      .addCase(signIn.rejected, (state, action) => {
+        // state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(signUp.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(signUp.fulfilled, (state, action) => {
+        state.authData = action.payload;
+        // state.loading = false;
+        state.error = null;
+      })
+      .addCase(signUp.rejected, (state, action) => {
+        // state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 

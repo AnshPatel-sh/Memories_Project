@@ -3,7 +3,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import { Button, Grid, Typography, Container } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { Icon } from "./icon";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 import { Input } from "./Input";
@@ -14,42 +14,61 @@ import {
   SubmitButton,
   GoogleButton,
 } from "./styles";
+
 import { googleLogin } from "../../features/authSlice";
 
+import { signIn, signUp } from "../../features/authSlice.js";
+
+const initialFormState = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+};
+
 export function Auth() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [isSignup, setIsSignup] = useState(true);
-
   const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState(initialFormState);
   const dispatch = useDispatch();
-
   const handleShowPassword = () => setShowPassword(!showPassword);
-
-  const handleSubmit = (e) => {};
-
   const googleSuccess = async (credentialResponse) => {
     try {
-      console.log(`This is credentialResponse`)
-      console.log(credentialResponse)
-      console.log(`This is credential`)
-      console.log(credentialResponse.credential)
+      
       await dispatch(googleLogin(credentialResponse.credential)).unwrap();
       navigate("/");
     } catch (error) {
       console.log("Google login failed:", error);
     }
   };
-
   const googleError = (error) => {
     console.log(`Something went wrong.. Please try again.`);
     console.log(error);
   };
 
-  const handleChange = (e) => {};
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
   const switchMode = () => {
     return setIsSignup((previousValue) => {
       return !previousValue;
     });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (isSignup) {
+      dispatch(signUp(formData)).then(() => {
+        return navigate("/");
+      });
+    } else {
+      dispatch(signIn(formData)).then(() => {
+        return navigate("/");
+      });
+    }
   };
 
   return (

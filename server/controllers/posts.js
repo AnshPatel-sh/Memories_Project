@@ -1,5 +1,6 @@
 import postMessage from "../models/postMessages.js";
 import mongoose from "mongoose";
+import jwt from "jsonwebtoken";
 
 export const getPosts = async (req, res) => {
   try {
@@ -72,3 +73,5 @@ export const likePost = async (req, res) => {
     console.log(error);
   }
 };
+
+
