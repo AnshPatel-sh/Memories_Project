@@ -3,7 +3,11 @@ import { Button, CardContent, Typography } from "@mui/material";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import { setCurrentId,deletePost,likePost } from "../../../features/postSlice.js";
+import {
+  setCurrentId,
+  deletePost,
+  likePost,
+} from "../../../features/postSlice.js";
 import { useDispatch } from "react-redux";
 
 import {
@@ -16,16 +20,42 @@ import {
   CardActionsStyled,
 } from "./styles.js";
 
+import ThumbUpAltOutlined from "@mui/icons-material/ThumbUpAltOutlined";
+
 export function Post({ post }) {
-
-
-  
+  const user = JSON.parse(localStorage.getItem("profile"));
   const dispatch = useDispatch();
-  const handleLike = async ()=>{
-    await dispatch(likePost(post._id))
-  }
+  const handleLike = async () => {
+    await dispatch(likePost(post._id));
+  };
 
+  const Likes = () => {
+    if (post.likes.length > 0) {
+      return post.likes.find(
+        (like) => like === (user?.result?.googleId || user?.result?._id)
+      ) ? (
+        <>
+          <ThumbUpAltIcon fontSize="small" />
+          &nbsp;
+          {post.likes.length > 2
+            ? `You and ${post.likes.length - 1} others`
+            : `${post.likes.length} like${post.likes.length > 1 ? "s" : ""}`}
+        </>
+      ) : (
+        <>
+          <ThumbUpAltOutlined fontSize="small" />
+          &nbsp;{post.likes.length} {post.likes.length === 1 ? "Like" : "Likes"}
+        </>
+      );
+    }
 
+    return (
+      <>
+        <ThumbUpAltOutlined fontSize="small" />
+        &nbsp;Like
+      </>
+    );
+  };
 
   return (
     <>
@@ -64,12 +94,8 @@ export function Post({ post }) {
           </Typography>
         </CardContent>
         <CardActionsStyled>
-          <Button
-            size="small"
-            color="primary"
-            onClick={handleLike}
-          >
-            <ThumbUpAltIcon fontSize="small" /> Like {post.likes}
+          <Button size="small" color="primary" onClick={handleLike}>
+            <Likes/>
           </Button>
           <Button
             size="small"
