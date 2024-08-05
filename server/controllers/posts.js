@@ -13,31 +13,42 @@ export const getPosts = async (req, res) => {
 };
 
 export const createPost = async (req, res) => {
-  
-    const post = req.body;
-    const { userId } = req;
-    try {
-      const newPost = new postMessage({
-        ...post,
-        creator: userId,
-        createdAt: new Date().toISOString(),
-      });
+  const post = req.body;
+  const { userId } = req;
+  try {
+    const newPost = new postMessage({
+      ...post,
+      creator: userId,
+      createdAt: new Date().toISOString(),
+    });
 
-      await newPost.save();
-      res.status(201).json(newPost);
-    } catch (error) {
-      res.status(409).json({ message: error.message });
-    }
+    await newPost.save();
+    res.status(201).json(newPost);
+  } catch (error) {
+    res.status(409).json({ message: error.message });
+  }
 };
 
 export const updatePost = async (req, res) => {
   const { id } = req.params;
-  const { title, message, creator, selectedFile, tags } = req.body;
+  const { title, message, selectedFile, tags } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(id))
     return res.status(404).send(`No post with id: ${id}`);
 
-  const updatedPost = { creator, title, message, tags, selectedFile, _id: id };
+  const post = await postMessage.findById(id);
+
+  if (post.creator !== req.userId)
+    return res.status(403).send("You are not authorized to update this post.");
+
+  const updatedPost = {
+    creator: req.userId,
+    title,
+    message,
+    tags,
+    selectedFile,
+    _id: id,
+  };
 
   await postMessage.findByIdAndUpdate(id, updatedPost, { new: true });
 
@@ -52,7 +63,14 @@ export const deletePost = async (req, res) => {
   }
 
   try {
-    await postMessage.findByIdAndDelete(id);
+    const post = await postMessage.findById(id);
+
+    if (post.creator !== req.userId)
+      return res
+        .status(403)
+        .send("You are not authorized to delete this post.");
+
+    await postMessage.findByIdAndRemove(id);
     res.json({ message: "Post deleted successfully." });
   } catch (error) {
     res
@@ -75,6 +93,8 @@ export const likePost = async (req, res) => {
     }
 
     const post = await postMessage.findById(id);
+    if (!post)
+      return res.status(404).json({ message: `No post with id: ${id}` });
 
     const index = post.likes.findIndex((id) => id === String(userId));
 

@@ -57,6 +57,10 @@ export function Post({ post }) {
     );
   };
 
+
+  const canEditOrDelete =
+    user?.sub === post.creator || user?._id === post.creator;
+
   return (
     <>
       <CardStyled>
@@ -71,15 +75,19 @@ export function Post({ post }) {
           <Typography variant="h6">{post.name}</Typography>
           <Typography variant="body2">{post.createdAt}</Typography>
         </OverlayStyled>
-        <Overlay2Styled>
-          <Button
-            style={{ color: "white" }}
-            size="small"
-            onClick={() => dispatch(setCurrentId(post._id))}
-          >
-            <MoreHorizIcon fontSize="default" />
-          </Button>
-        </Overlay2Styled>
+
+        {canEditOrDelete && (
+          <Overlay2Styled>
+            <Button
+              style={{ color: "white" }}
+              size="small"
+              onClick={() => dispatch(setCurrentId(post._id))}
+            >
+              <MoreHorizIcon fontSize="default" />
+            </Button>
+          </Overlay2Styled>
+        )}
+
         <DetailsStyled>
           <Typography variant="body2" color="textSecondary" component="h2">
             {post.tags.map((tag) => `#${tag} `)}
@@ -94,18 +102,30 @@ export function Post({ post }) {
           </Typography>
         </CardContent>
         <CardActionsStyled>
-          <Button size="small" color="primary" onClick={handleLike}>
-            <Likes/>
+          <Button size="small" color="primary" onClick={handleLike} disabled = {!user}>
+            <Likes />
           </Button>
-          <Button
+          {/* <Button
             size="small"
             color="primary"
             onClick={() => dispatch(deletePost(post._id))}
           >
             <DeleteIcon fontSize="small" /> Delete
-          </Button>
+          </Button> */}
+
+          {canEditOrDelete && (
+            <Button
+              size="small"
+              color="primary"
+              onClick={() => dispatch(deletePost(post._id))}
+            >
+              <DeleteIcon fontSize="small" /> Delete
+            </Button>
+          )}
         </CardActionsStyled>
       </CardStyled>
     </>
   );
 }
+
+

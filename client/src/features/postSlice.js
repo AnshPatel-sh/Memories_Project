@@ -40,13 +40,7 @@ export const deletePost = createAsyncThunk("posts/deletePost", async (id) => {
   return id;
 });
 
-/**FUNCTION 4 -----LIKE THE POST----- */
-// export const likePost = createAsyncThunk("posts/likePost", async (id) => {
-//   console.log(`Like post thunk activated`)
-//   const { data } = await api.likePost(id);
-//   console.log(data)
-//   return data;
-// });
+
 
 export const likePost = createAsyncThunk(
   "posts/likePost",
