@@ -57,9 +57,16 @@ export function Post({ post }) {
     );
   };
 
+  // Debugging logs
+  console.log("User:", user);
+  console.log("Post creator:", post.creator);
 
   const canEditOrDelete =
-    user?.sub === post.creator || user?._id === post.creator;
+    user?.result?._id === post.creator ||
+    user?.result?.googleId === post.creator;
+
+
+  console.log("Can Edit or Delete:", canEditOrDelete);
 
   return (
     <>
@@ -102,7 +109,12 @@ export function Post({ post }) {
           </Typography>
         </CardContent>
         <CardActionsStyled>
-          <Button size="small" color="primary" onClick={handleLike} disabled = {!user}>
+          <Button
+            size="small"
+            color="primary"
+            onClick={handleLike}
+            disabled={!user}
+          >
             <Likes />
           </Button>
           {/* <Button
