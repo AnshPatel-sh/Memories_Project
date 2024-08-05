@@ -3,6 +3,15 @@ import axios from "axios";
 // Create an axios instance with the base URL
 const API = axios.create({ baseURL: "http://localhost:5000" });
 
+API.interceptors.request.use((req) => {
+  if (localStorage.getItem("profile")) {
+    req.headers.Authorization = `Bearer ${
+      JSON.parse(localStorage.getItem("profile")).token
+    }`;
+  }
+  return req;
+});
+
 // Posts endpoints
 export const fetchPost = () => API.get("/posts");
 export const createPost = (newPost) => API.post("/posts", newPost);
